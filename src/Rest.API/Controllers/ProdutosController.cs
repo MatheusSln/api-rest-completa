@@ -79,6 +79,40 @@ namespace Rest.API.Controllers
             return CustomResponse(produtoImagemDto);
         }
 
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Atualizar(Guid id, ProdutoDto produtoDto)
+        {
+            if (id != produtoDto.Id)
+            {
+                NotificarErro("Os ids informados não são iguais!");
+                return CustomResponse();
+            }
+
+            var produtoAtualizacao = await ObterProduto(id);
+            produtoDto.Imagem = produtoAtualizacao.Imagem;
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            if (produtoDto.ImagemUpload != null)
+            {
+                var imagemNome = Guid.NewGuid() + "_" + produtoDto.Imagem;
+                if (!UploadArquivo(produtoDto.ImagemUpload, imagemNome))
+                {
+                    return CustomResponse(ModelState);
+                }
+
+                produtoAtualizacao.Imagem = imagemNome;
+            }
+
+            produtoAtualizacao.Nome = produtoDto.Nome;
+            produtoAtualizacao.Descricao = produtoDto.Descricao;
+            produtoAtualizacao.Valor = produtoDto.Valor;
+            produtoAtualizacao.Ativo = produtoDto.Ativo;
+
+            await _produtoService.Atualizar(_mapper.Map<Produto>(produtoAtualizacao));
+
+            return CustomResponse(produtoDto);
+        }
+
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<ProdutoDto>> Excluir(Guid id)
         {
