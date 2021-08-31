@@ -62,6 +62,23 @@ namespace Rest.API.Controllers
             return CustomResponse(produtoDto);
         }
 
+        [HttpPost("Adicionar")]
+        public async Task<ActionResult<ProdutoDto>> AdicionarAlternativo(ProdutoImagemDto produtoImagemDto)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            var imgPrefixo = Guid.NewGuid() + "_";
+            if (!await UploadArquivoAlternativo(produtoImagemDto.ImagemUpload, imgPrefixo))
+            {
+                return CustomResponse(ModelState);
+            }
+
+            produtoImagemDto.Imagem = imgPrefixo + produtoImagemDto.ImagemUpload.FileName;
+            await _produtoService.Adicionar(_mapper.Map<Produto>(produtoImagemDto));
+
+            return CustomResponse(produtoImagemDto);
+        }
+
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<ProdutoDto>> Excluir(Guid id)
         {
@@ -97,29 +114,29 @@ namespace Rest.API.Controllers
             return true;
         }
 
-        //private async Task<bool> UploadArquivoAlternativo(IFormFile arquivo, string imgPrefixo)
-        //{
-        //    if (arquivo == null || arquivo.Length == 0)
-        //    {
-        //        NotificarErro("Forneça uma imagem para este produto!");
-        //        return false;
-        //    }
+        private async Task<bool> UploadArquivoAlternativo(IFormFile arquivo, string imgPrefixo)
+        {
+            if (arquivo == null || arquivo.Length == 0)
+            {
+                NotificarErro("Forneça uma imagem para este produto!");
+                return false;
+            }
 
-        //    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/app/demo-webapi/src/assets", imgPrefixo + arquivo.FileName);
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/app/demo-webapi/src/app/assets", imgPrefixo + arquivo.FileName);
 
-        //    if (System.IO.File.Exists(path))
-        //    {
-        //        NotificarErro("Já existe um arquivo com este nome!");
-        //        return false;
-        //    }
+            if (System.IO.File.Exists(path))
+            {
+                NotificarErro("Já existe um arquivo com este nome!");
+                return false;
+            }
 
-        //    using (var stream = new FileStream(path, FileMode.Create))
-        //    {
-        //        await arquivo.CopyToAsync(stream);
-        //    }
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await arquivo.CopyToAsync(stream);
+            }
 
-        //    return true;
-        //}
+            return true;
+        }
 
         private async Task<ProdutoDto> ObterProduto(Guid id)
         {
