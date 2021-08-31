@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\app\**" />
+    <Content Remove="wwwroot\app\**" />
+    <EmbeddedResource Remove="wwwroot\app\**" />
+    <None Remove="wwwroot\app\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
@@ -14,6 +21,11 @@
   <ItemGroup>
     <ProjectReference Include="..\API.Business\API.Business.csproj" />
     <ProjectReference Include="..\API.Data\API.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\app\demo-webapi\src\NewFolder\" />
+    <Folder Include="wwwroot\imagens\" />
   </ItemGroup>
 
 </Project>

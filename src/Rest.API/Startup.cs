@@ -43,6 +43,15 @@ namespace Rest.API
                 options.SuppressModelStateInvalidFilter = true;
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Development",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
+
             services.ResolveDependencies();
         }
 
@@ -58,7 +67,7 @@ namespace Rest.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseCors("Development");
             app.UseHttpsRedirection();
             app.UseMvc();
         }
