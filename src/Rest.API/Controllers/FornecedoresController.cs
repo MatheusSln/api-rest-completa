@@ -1,6 +1,7 @@
 ﻿using API.Business.Intefaces;
 using API.Business.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rest.API.Data.Dto;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Rest.API.Controllers
 {
+    [Authorize]
     [Route("api/fornecedores")]
     public class FornecedoresController : MainController
     {
@@ -30,6 +32,7 @@ namespace Rest.API.Controllers
             _enderecoRepository = enderecoRepository;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IEnumerable<FornecedorDto>> ObterTodos()
         {
