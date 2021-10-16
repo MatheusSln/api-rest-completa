@@ -1,17 +1,19 @@
 ﻿using API.Business.Intefaces;
 using API.Business.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Rest.API.Data.Dto;
+using Rest.API.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Rest.API.Controllers
 {
+    [Authorize]
     [Route("api/produtos")]
     public class ProdutosController : MainController
     {
@@ -45,6 +47,7 @@ namespace Rest.API.Controllers
             return produtoDto;
         }
 
+        [ClaimsAuthorize("Produto", "Adicionar")]
         [HttpPost]
         public async Task<ActionResult<ProdutoDto>> Adicionar(ProdutoDto produtoDto)
         {
@@ -62,6 +65,7 @@ namespace Rest.API.Controllers
             return CustomResponse(produtoDto);
         }
 
+        [ClaimsAuthorize("Produto", "Adicionar")]
         [HttpPost("Adicionar")]
         public async Task<ActionResult<ProdutoDto>> AdicionarAlternativo(ProdutoImagemDto produtoImagemDto)
         {
@@ -79,6 +83,7 @@ namespace Rest.API.Controllers
             return CustomResponse(produtoImagemDto);
         }
 
+        [ClaimsAuthorize("Produto", "Atualizar")]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Atualizar(Guid id, ProdutoDto produtoDto)
         {
@@ -113,6 +118,7 @@ namespace Rest.API.Controllers
             return CustomResponse(produtoDto);
         }
 
+        [ClaimsAuthorize("Produto", "Excluir")]
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<ProdutoDto>> Excluir(Guid id)
         {
