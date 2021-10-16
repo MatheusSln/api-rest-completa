@@ -11,10 +11,22 @@ namespace Rest.API.Controllers
     public abstract class MainController : ControllerBase
     {
         private readonly INotificador _notificador;
+        public readonly IUser AppUser;
 
-        protected MainController(INotificador notificador)
+        protected Guid UsuarioId { get; set; }
+        protected bool UsuarioAutenticado { get; set; }
+
+        protected MainController(INotificador notificador,
+                                 IUser appUser)
         {
             _notificador = notificador;
+            AppUser = appUser;
+
+            if (AppUser.IsAuthenticated())
+            {
+                UsuarioId = appUser.GetUserId();
+                UsuarioAutenticado = true;
+            }
         }
 
         protected bool OperacaoValida()
